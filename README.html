@@ -1,0 +1,22 @@
+<h1>Gatling CGI proxy script for simple forwarding.</h1>
+
+<h2>Usage</h2>
+
+<h3>shorthand</h3>
+<p>Create symlinks to this script and let gatling run them.</p>
+<p>Supported names are listed inside the script and are currently not configurable.</p>
+
+<h3>detailed</h3>
+<p>Example folder structure:</p>
+<dir>
+  <li class="directory">sub.example.com:80/</li>
+  <li><span class="symlink">url@</span> -> <span class="executable">.proxy</span></li>
+  <li><span class="symlink">pic@</span> -> <span class="executable">.proxy</span></li>
+  <li><span class="symlink">tab@</span> -> <span class="executable">.proxy</span></li>
+  <li><span class="symlink">book@</span> -> <span class="executable">.proxy</span></li>
+  <li class="executable">.proxy</li>
+</dir>
+<p>Run gatling inside the folder:</p>
+<code>su -c "gatling -FS -C+x"</code>
+<p>…and go for example to http://localhost/url</p>
+
