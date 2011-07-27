@@ -11,14 +11,12 @@ h3. detailed
 
 Example folder structure:
 
-<dir>
-  <li class="directory">sub.example.com:80/</li>
-  <li><span class="symlink">url@</span> -> <span class="executable">.proxy</span></li>
-  <li><span class="symlink">pic@</span> -> <span class="executable">.proxy</span></li>
-  <li><span class="symlink">tab@</span> -> <span class="executable">.proxy</span></li>
-  <li><span class="symlink">book@</span> -> <span class="executable">.proxy</span></li>
-  <li class="executable">.proxy</li>
-</dir>
+* %{color:blue}sub.example.com:80/%
+* %{color:cyan}url@% -> %{color:green}.proxy%
+* %{color:cyan}pic@% -> %{color:green}.proxy%
+* %{color:cyan}tab@% -> %{color:green}.proxy%
+* %{color:cyan}book@% -> %{color:green}.proxy%
+* %{color:green}.proxy%
 
 Run gatling inside the folder:
 
