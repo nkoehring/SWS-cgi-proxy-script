@@ -1,0 +1,102 @@
+#!/usr/bin/ruby
+# encoding: UTF-8
+
+require 'open-uri'
+
+USAGE = <<HTML
+<html>
+  <head>
+    <title>Local Proxy Usage</title>
+    <style>
+      body { background: #2D2D2D; color: #EEE; }
+      .directory  { color: #55E; }
+      .symlink    { color: #8EE; }
+      .executable { color: #8E8; }
+      dir li { list-style-type: circle; }
+      code { margin-left: 3em; padding: 0.5em 1em; background: #444; }
+      code:before { content: "%> "; color: #AAC; }
+    </style>
+  </head>
+  <body>
+    <h1>Usage</h1>
+    <p>Please create symlinks to this script and let gatling run them.</p>
+    <p>Supported names are:</p>
+    <ul>
+      <li>url</li>
+      <li>pic</li>
+      <li>tab</li>
+      <li>book</li>
+    </ul>
+    <p>Example folder structure:</p>
+    <dir>
+      <li class="directory">sub.example.com:80/</li>
+      <li><span class="symlink">url@</span> -> <span class="executable">.proxy</span></li>
+      <li><span class="symlink">pic@</span> -> <span class="executable">.proxy</span></li>
+      <li><span class="symlink">tab@</span> -> <span class="executable">.proxy</span></li>
+      <li><span class="symlink">book@</span> -> <span class="executable">.proxy</span></li>
+      <li class="executable">.proxy</li>
+    </dir>
+    <p>Run gatling inside the folder:</p>
+    <code>su -c "gatling -FS -C+x"</code>
+    <p>…and go for example to http://localhost/url</p>
+  </body>
+</html>
+HTML
+
+def fetch
+  path = (ENV["PATH_INFO"] ? ENV["PATH_INFO"].gsub(/^\/+/, '') : "")
+  port = case $0
+         when "url" then 4567
+         #when "url" then 17519
+         when "pic" then 17539
+         when "tab" then 17551
+         when "book"then 17569
+         else 0
+         end
+
+  url = "http://localhost:#{port}/#{path}"
+
+  content_type = status = content = nil
+  output = {
+    :content_type => "text/html; charset=utf-8",
+    :status => "200 OK",
+    :static_content => USAGE
+  }
+
+  if port > 0
+    begin
+      content = open(url)
+      status = "200 OK"
+      content_type = content.content_type_parse.flatten
+      content_type = "#{content_type[0]}; #{content_type[1]}=#{content_type[2]}" #TODO: always working?
+    rescue OpenURI::HTTPError => e
+      content = status = e.message
+    rescue Exception => e
+      status = "500 Internal Server Error"
+      content = e.message
+    end
+  end
+
+  output[:content_type] = content_type unless content_type.nil?
+  output[:status] = status unless status.nil?
+  if content
+    if content.respond_to? :read
+      output[:io] = content
+    else
+      ouput[:static_content] = content
+    end
+  end
+  output
+end
+
+out = fetch()
+
+puts "HTTP/1.1 " + out[:status]
+puts "Content-Type: #{out[:content_type]}\n\n"
+
+if out.include? :io
+  STDOUT.write(out[:io].read)
+else
+  puts out[:static_content]
+end
+
