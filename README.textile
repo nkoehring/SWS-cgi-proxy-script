@@ -24,3 +24,5 @@ Run gatling inside the folder:
 
 …and go for example to http://localhost/url
 
+!http://api.flattr.com/button/flattr-badge-large.png(flattr this repo)!:https://flattr.com/submit/auto?user_id=nkoehring&url=https://github.com/nkoehring/SWS-cgi-proxy-script&title=SWS-cgi-proxy-script&language=en_GB&tags=github&category=software 
+
